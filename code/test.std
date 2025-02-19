@@ -23,8 +23,6 @@ stack(
 all(x => x
   // .lastOf(4, x=>x.rev())
   .compressor("-8:8:0:0:0")
-  // .wordfall({vertical: 1})
-  // .scope()
 )
 
-// hush()
+hush()

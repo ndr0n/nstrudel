@@ -13,30 +13,39 @@ export function load() {
     (t, value, onended) => 
     {
       // Sound
-      const saw = getOscillator('sawtooth', t, value);
-      const sawGain = gainNode(0.5);
-      
-      const tri = getOscillator('sawtooth', t, value);
-      const triGain = gainNode(0.5);
+      const v1 = value;
+      v1.note = v1.note;
+      const o1 = getOscillator('sawtooth', t, v1);
+      const o1Gain = gainNode(1);
 
-      const mix = gainNode(0.25);
+      const v2 = value;
+      v2.note = v2.note + v2.detune;
+      const o2 = getOscillator('sawtooth', t, v2);
+      const o2Gain = gainNode(1);
+
+      const am = gainNode(1);
       
-      const master = gainNode(1);
+      const master = gainNode(0.5);
+      
       const env = gainNode(1);
 
-      const node = saw.node.connect(sawGain).connect(mix).connect(master).connect(env);
-      tri.node.connect(triGain).connect(mix);
+      const node = o1.node.connect(o1Gain).connect(am).connect(master).connect(env);
+      o2.node.connect(o2Gain).connect(am.gain);
 
       // Cleanup
-      saw.node.onended = () => 
+      o1.node.onended = () => 
       {
-        saw.node.disconnect();
-        sawGain.disconnect();
-        tri.node.disconnect();
-        triGain.disconnect();
-        mix.disconnect();
+        o1.node.disconnect();
+        o1Gain.disconnect();
+        
+        o2.node.disconnect();
+        o2Gain.disconnect();
+        
+        am.disconnect();
+        
         master.disconnect();
         env.disconnect();
+        
         onended();
       };
 
@@ -47,11 +56,12 @@ export function load() {
           'linear',
           [0.001, 0.0, 1.0, 0.001],
       );
+      
       const holdEnd = t + value.duration;
       getParamADSR(node.gain, attack, decay, sustain, release, 0, 1, t, holdEnd, 'linear');
       const envEnd = holdEnd + release + 0.001;
-      saw.triggerRelease?.(envEnd);
-      saw.stop(envEnd);
+      o1.triggerRelease?.(envEnd);
+      o1.stop(envEnd);
 
       return {node, stop: (endTime) => {stop(endTime);}};
     },

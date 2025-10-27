@@ -1,0 +1,47 @@
+samples('github:ndr0n/nsamples')
+
+// samples('shabda/speech/en-GB/m:fuck_,you_')
+// 
+setcps(170/60/4)
+
+let chords = "<Am Em Bm Dm>/2";
+
+d1: stack(
+  // stack(
+    // s("ngkit:5").early(16).loopAt(8).slice(16, "[0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15]*8?0.5").gain(0.7).cut(1).coarse(irand(16)),
+    // s("[namen:7|namen:8]/2").loopAt(1).slice(8, "[0|1|2|3|4|5|6|7]*8").gain(0.875).cut(1).clip("[1|1|0.25]*16").coarse(irand(6))
+    // .bpf(rand.early(136).range(10,10000)).bpq(0.25)
+  // ,
+    // "[t*8?0.7]*1".s("nk:24").gain(1).cut(1).coarse(irand(16)).legato(4),
+    "[<t ~> <~ t t ~> <~ ~ ~ t> ~ ~ ~ ~ ~]*2".s("nk:24").gain(1).cut(1).coarse(irand(16)).legato(4),
+    "[~ ~ ~ ~ t ~ ~ ~]*2".s("white").gain(0.7).cut(1).clip(0.75),
+  // ).sometimesBy(0.25, x=>x.shuffle(16)),
+  // "[t t t t]*4".s("nhh:0").legato(0.25).gain(0.375).coarse(irand(16)).bpf(rand.early(136).range(10,10000)).bpq(0.25),
+  // "[~ ~ t ~]*4".s("noh:1").legato(0.25).gain(0.375).bpf(rand.early(136).range(10,10000)).bpq(0.25),
+  note("[0|2|3|5|12|14|15|17]*[16]?0.5").trans(32+12).s("sine").legato(1).gain(1)
+  .lpq(rand.early(843).range(10,20))
+  .lpf(sine.slow(8).early(173).range(10,100))
+  .lpe(rand.early(168).range(0,16))
+  .rib(4,1)
+  .iter(4)
+  // .lpf(100)
+  // .lpa(rand.early(773).range(-1,1))
+  // .lpd(rand.early(723).range(0,4))
+  // .fm(rand.range(0,32)).fmh(0.).fmwave("sine")
+  // .repeatCycles(4)
+  // .iter(4)
+
+  ,
+    // "[t*8]*1".s("ncircuit:14").loopAt(1).slice(8, "[0|1|2|3|4|5|6|7]*8?0.5").gain(0.85).cut(2).legato(1).note(31),
+).orbit(1)
+.delay(0.25).delayt(0.035).delayfb(rand)
+
+d2: stack(
+  // s("[nchords:2*8?0.875]*1").gain(0.5).note("[29|36]"),
+  // s("npad:1*8?0.25").gain(0.5).legato(1).note(29).cut(4).begin(saw.slow(4)).bpf(rand.early(136).range(10,10000)).bpq(0.25),
+  // s("nvox:6").gain(0.7).slice(16, "[0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15]*8?0.7").legato(1).note(24).cut(5).lpf(1000),
+).orbit(2)
+.delay(0.25).delayt(0.33).delayfb(rand)
+.room(0.25).size(9)
+
+all(x => x.compressor("-8:8:8:0.01:0.01"))

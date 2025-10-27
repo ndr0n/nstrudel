@@ -1,0 +1,28 @@
+const synths = (await import('https://cdn.jsdelivr.net/gh/ndr0n/nstrudel/synths/functions.js')).load();
+samples('github:ndr0n/nsamples')
+
+setcps(120/60/4)
+
+d2: stack(
+  s("nk:0").struct("[t ~ ~ ~ t ~ ~ ~]*2").legato(1).gain(1).cut(1),
+  // s("namen:8").splice(8, "[0|1|2|3|4|5|6|7]*[8|16]?0.25").legato(1).gain(0.5).coarse(irand(9)).lpf(rand.range(10,10000)).cut(3),
+  s("sine").struct("[t|~|~|~|~|~|~|~]*[8|16]?0.25").note(31).legato("[8|16]").gain(1).cut(2).dist(1).coarse(irand(9)).adsr("0:1:0:0"),
+  s("nhh:0").struct("[t t t t]*2").legato(0.25).gain(0.5),
+  // note("[0|2|3|5|12|14|15|17|24]*16").trans(31).s("saw").lpf(rand.range(40,80)).lpq(rand.range(1,16)).lpe(rand.range(-5,5)).lpa(0).lpd(1).lps(1).lpr(0).repeatCycles(4).gain(0.8)
+).orbit(2).early(16)
+.delay(0.25).delayt(0.02).delayfb(rand)
+
+d3: stack(
+  // s("ndrone:2").splice(64, "[0|1|2|3|4|5|6|7]*8?0.25").note(36).legato(1).gain(1).cut(9),
+  // note("[0|3|5|7|12|15|17|19|24]*16?0.7").s("sine").trans(43).legato(3).gain(0.75).trans("[0,7]").adsr("0:1:0:0")
+).orbit(3).early(32)
+.delay(0.25).delayt(0.33).delayfb(0.75)
+.room(0.25).size(9)
+
+all(x => x
+  .compressor("-8:8:8:0.01:0.01")
+  // .slow(2)
+  // .repeatCycles(4)
+  // .fast(2)
+  // .cps(rand.range(0.125,1.125))
+)

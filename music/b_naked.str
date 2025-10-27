@@ -1,0 +1,65 @@
+samples('github:ndr0n/nsamples')
+
+// samples('shabda/speech/en-GB/m:fuck_,you_')
+
+// register
+
+setcps(170/60/4)
+
+register('nbpf', (freq, bandsize, q, pat) => {
+  return pat.lpf(freq + (bandsize/2)).lpq(q).hpf(freq - (bandsize/2)).hpq(q)
+}); 
+
+register('slows', (speed, seed, pat) => {
+  return pat.late(seed).slow(speed)
+});
+
+register('slowf', function (speed, func, pat) {
+  return func(pat.fast(speed)).slow(speed);
+});
+
+
+const nrand = register('nrand', (min, max, seed) => rand.range(min, max).late(seed));
+
+d1: stack(
+  stack(
+    "[t t t t]*4?0.75".s("bd:3").gain(0.5).clip(nrand(0.5,4,612)).cut(1)
+    .lpf(perlin.slows(6,021).rangex(9,9000)).lpq(3)
+    ,
+    
+    "[<t ~ ~ ~> <~ ~ t ~> <~ t ~ [~ t]> ~ ~ ~ ~]*1".s("nk:24").gain(1).cut(1).coarse(irand(0)).clip(4).note(33)
+    .nbpf(perlin.slows(3,511).rangex(3,3000),3000,3)
+    ,
+    
+    "[~ ~ ~ ~ t ~ ~ ~]*1".s("ns:2").gain(0.375).cut(1).clip(1).note(30)
+    .nbpf(perlin.slows(6,205).rangex(3,3000),3000,3)
+    ,
+    
+    s("[nneuro:12]").loopAt("[1]").slice(8, "[0|1|2|3|4|5|6|7]*8?0.5").gain(0.375).clip("[1|2]*32").cut(5)
+    .lpf(perlin.slows(6,156).rangex(30,3000)).lpq(3)
+    ,
+    
+  ).sometimesBy(0/4, x => x.shuffle(16))
+  ,
+  
+  "[t t t t]*2".s("nhh:0").legato(nrand(0.125,0.25,739)).gain(0.5).nbpf(perlin.slows(6,991).rangex(6,6000), 3000, 3),
+).orbit(1)
+
+
+d2: stack(
+  s("nvox:10").slice(16, "[0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15]*16?0.75").note(24).gain(0.5).clip(2).cut(7)
+  .lpf(perlin.slows(9,156).rangex(9,9000)).lpq(3)
+  ,
+  
+  // "[t t t t]*4?0.75".s("nchords:12").note("[22|22|22|29]/2").gain(1).clip(perlin.slows(3,106).range(0.5,3)).cut(6)
+  // .nbpf(perlin.slows(9,543).rangex(10,10000), 2000, 3)
+  // ,
+).orbit(2).late(16)
+.delay(0.25).delayt("[0.125|0.165|0.25|0.33|0.5|0.66]").delayfb(nrand(0,1,830))
+.room(0.375).rsize(9)
+
+all(x => x
+  .compressor("-8:8:8:0.01:0.01")
+  // .cps(nrand(0.125,0.875,951)) 
+  // .slowf(2, x => x.repeatCycles(4))
+)

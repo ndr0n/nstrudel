@@ -6,6 +6,20 @@ export function load() {
   //hpf between 0 and 1
   register('rhpf', (x,pat) => {return pat.hpf(pure(x).mul(12).pow(4))});
 
+  register('nbpf', (freq, q, bandsize, pat) => {
+    return pat.lpf(freq + (bandsize/2)).lpq(q).hpf(freq - (bandsize/2)).hpq(q)
+  }); 
+
+  register('slows', (speed, seed, pat) => {
+    return pat.late(seed).slow(speed)
+  });
+
+  register('slowf', function (speed, func, pat) {
+    return func(pat.fast(speed)).slow(speed);
+  });
+
+  const nrand = register('nrand', (min, max, seed) => rand.range(min, max).late(seed));
+
   // SOUNDS
   registerSound
   (

@@ -1,0 +1,20 @@
+samples('github:ndr0n/nsamples')
+
+d4: stack(
+  s("namen:24").splice(8, "[0 .. 7]").gain(0.5).legato("[<0.5 0.25 0.5 1>/4]*16").cut(3).bpf(saw.rangex(100,10000).slow(8)),  
+  // s("nhh").struct("[t t t t]*1").legato(0.25).gain(0.25),
+  // note("[0 0 0 5]/4").s("sin").trans(31).trans("[0,0.025,-0.025]").gain(1).n(4),
+).orbit(4).early(16)
+
+d5: stack(
+  n("[0|1|2|3|4|5|6|7|8|9|10|11|12|13|14]*[[12|16]?0.5]").scale("hirajoshi").trans(-5).trans("[-12,0]").s("[sin|tri]").gain(0.325)
+  .trans("[0]").adsr("0:0.5:0.5:0").clip(1)
+  // .fm(rand.early(124).range(0, 8))
+  // .fmh(rand.early(156).range(0.975,1.025))
+  // .fmwave("sine")
+  // .vib(rand.early(168).range(0,16))
+  .bpf(rand.early(151).rangex(10,100000)).bpq(0.125).ftype(2)
+).orbit(5).early(32)
+.room(0.25).size(9)
+.delay(0.25).delayt(0.33).delayfb(0.75)
+// .coarse(irand(3)).postgain(1)

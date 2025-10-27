@@ -1,0 +1,32 @@
+samples('github:ndr0n/nsamples')
+
+d4: stack(
+  s("namen:6").splice(16, "[0|1|2|3|4|5|6|7]*[[8|16]*16]").gain(0.7).legato("[0.25|1]*16").cut(3).bpf(perlin.slow(1).rangex(10,10000)).bpq(0.25),  
+  // s("nhh").struct("[t t t t]*4").legato(0.25).gain(0.25),
+).orbit(4).early(16)
+// .coarse(irand(6))
+// .delay(0.25).delayt(0.0275).delayfb(rand.early(683))
+
+let chords = "<Em Am Em Dm>";
+let wtPos = rand.range(0,0.875)
+let wtSize = 0.125; 
+
+d5: stack(
+  chord(chords).voicing().s("sin").gain(0.5).trans(-12),
+  n("[0|1|2|3|4|5|6|7]*16?0.25").chord(chords).voicing().s("supersaw").gain(0.25).clip(1).trans("[0,7]").trans(-12)
+  .lpf(rand.early(125).rangex(10,10000)).lpq(9).lpe(rand.range(0,6))
+  .fm(rand.rangex(0,9)).fmh(1).fmwave("sine")
+  ,
+  // n("[0|1|2|3|4|5|6|7|8|9|10|11|12|13|14]*[12|16]?0.25").scale("hirajoshi").trans(-5).trans("[-12]").trans(0).s("[sin]").gain(0.5)
+  // .trans("[0]").adsr("0:0.5:0.5:0").clip(irand(4))
+  // .fm(rand.early(124).range(0, 8)).fmh(rand.early(156).range(0.9875,1.0125))
+  // .vib(rand.early(168).range(0,16))
+  // .lpf(rand.early(151).range(10,10000)).lpq(rand.range(4,16))
+).orbit(5)
+.room(0.25).size(9)
+.delay(0.25).delayt(0.33).delayfb(0.5)
+// .coarse(irand(3)).postgain(1)
+
+all(x => x.compressor("-8:8:8:0.01:0.01")
+    // .repeatCycles(4)
+)

@@ -1,0 +1,56 @@
+samples('github:ndr0n/nsamples')
+
+// samples('shabda/speech/en-GB/m:fuck_,you_')
+
+register
+
+setcps(170/60/4)
+
+register('nbpf', (freq, bandsize, q, pat) => {
+  return pat.lpf(freq + bandsize).lpq(q).hpf(freq).hpq(q)
+}); 
+
+register('nslow', (speed, seed, pat) => {
+  return pat.slow(speed).late(seed)
+});
+
+const nrand = register('nrand', (min, max, seed) => rand.range(min, max).late(seed));
+
+
+d1: stack(
+  stack(
+    "[<t ~ ~ ~> <~ t t [~ t]> ~ ~ ~ ~ ~]*1".s("nk:24").gain(1).cut(1).clip(nrand(1,4,854)).note(33),
+    // "[~ ~ ~ ~ t ~ ~ ~]*2".s("white").gain(0.7).cut(1).clip(0.75).nbpf(perlin.nslow(3,461).rangex(30,9000), 3000, 9),
+    "[~ ~ ~ ~ t ~ ~ ~]*1".s("ns:3").gain(0.7).cut(nrand(0.25,3,139)).clip(0.5).lpf(perlin.nslow(3,959).rangex(100,10000)).lpq(3),
+    // "<t>".s("ncircuit:12").loopAt(2).slice(8, "[0|1|2|3|4|5|6|7]*8?0.7").late(727).gain(0.5).cut(2).clip("[1|2|3]*32").note(31).cut(5).nbpf(perlin.nslow(3,621).rangex(30,3000), 3000, 3),
+    // "[t t t t]*4?0.75".s("bd:1").legato(nrand(2,4,739)).gain(0.375).lpf(perlin.nslow(3,748).rangex(10,10000)).lpq(3),
+  )
+  .sometimesBy(1/16, x => x.scramble(16)),
+  "[t t t t]*0.5".s("nhh:0").legato(nrand(0.25,1,739)).gain(0.375).nbpf(perlin.nslow(3,991).rangex(30,9000), 3000, 9),
+  note("[0 3 2 5]*2").trans(25+5).s("saw").legato(1).gain(1)
+  .iter(4)
+  
+  // note("[0|2|3|5|12|14|15|17]*[16]?0.5").trans(25).s("saw").legato(1).gain(1)
+  
+  // .rib(3,3)
+  // .iter(4)?A
+  
+  .lpf(perlin.nslow(3,346).range(50,500)).lpe(perlin.nslow(3,122).range(0,6)).lpq(nrand(10,20,869))
+  // .lpa(nrand(-1,0.5,612))
+  // .lpf(perlin.nslow(3,346).range(50,500)).lpe(perlin.nslow(3,122).range(0,3)).lpq(nrand(3,16,864))
+  // .fm(nrand(0,16,749)).fmwave("sawtooth")
+  // .nbpf(perlin.nslow(1,698).rangex(30,6000), 3000, 9)
+  // ,
+).orbit(1)
+.delay(0.25).delayt(0.025).delayfb(rand)
+
+
+d2: stack(
+  // "[t t t t]*4?0.75".s("nchords:2").note(22).clip(perlin.nslow(3,106).range(0.5,3)).gain(0.75).cut(9).nbpf(perlin.nslow(3,543).rangex(30,3000), 3000, 3),
+  // s("nvox:9").gain(1).slice(16, "[0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15]*16?0.7").legato(2).note(24).cut(5).lpf(1000).gain(0.5),
+).orbit(2)
+.delay(0.25).delayt(0.33).delayfb(rand/2)
+.room(0.25).rsize(6)
+
+all(x => x.compressor("-8:8:8:0.01:0.01"))
+

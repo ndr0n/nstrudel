@@ -1,0 +1,42 @@
+samples('github:ndr0n/nsamples')
+
+samples('shabda/speech/en-GB/m:fuck_,politicians_')
+
+setcps(170/60/4)
+
+let chords = "<Am Em Bm Dm>/2";
+
+d1: stack(
+  stack(
+    // s("namen:25").loopAt(1).slice(8, "[0|1|2|3|4|5|6|7]*8").gain(0.85).clip("[0.25|1]*16").cut(1).coarse(irand(9)),
+    s("ngkit:5").loopAt(8).slice(16, "[0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15]*8?0.5").gain(0.85).cut(1).coarse(irand(9)),
+    "[t*8?0.7]*1".s("nk:24").gain(1).cut(1).coarse(irand(9)).legato(4),
+    "[~ ~ ~ ~ t ~ ~ ~]*1".s("ns:9").gain(0.7).cut(1),
+  ).sometimesBy(0.125, x=>x.shuffle(16)),
+  "[t t t t]*1".s("nhh:0").legato(0.25).gain(0.375),
+  // note("[0|2|3|5|12|14|15|17]*[8|12|16]?0.25").trans(32).s("saw").legato(1).gain(1.25)
+  // .lpq(rand.early(843).range(10,20)).lpf(rand.early(173).range(10,1000)).lpe(rand.early(168).range(0,4)).lpa(rand.early(773).range(-1,0.25)).lpd(rand.early(723).range(0,4))
+  // .fm(rand.range(0,16)).fmh(1).fmwave("sawtooth")
+  // .repeatCycles(4)
+  // .iter(4)
+  // .rib(4,3)
+  // ,
+    // "[t*8]*1".s("ncircuit:14").loopAt(1).slice(8, "[0|1|2|3|4|5|6|7]*8?0.5").gain(0.85).cut(2).legato(1).note(31),
+).orbit(1)
+// .delay(0.25).delayt(0.035).delayfb(rand)
+
+d2: stack(
+  // s("[nchords:2*8?0.875]*1").gain(0.5).note("[29|36]"),
+  // s("npad:1*8?0.25").gain(0.375).legato(1).note(29).cut(4).begin(saw.slow(4)),
+  // s("nvox:6").gain(0.7).slice(16, "[0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15]*8?0.7").legato(1).note(24).cut(5).lpf(1000),
+  // s("[[fuck_]|[politicians_]]*4?0.75").note(36).gain(0.5).cut(6),
+).orbit(2)
+.delay(0.25).delayt(0.33).delayfb(0.75)
+.room(0.25).size(10)
+.vib(rand.range(0,2))
+
+all(x => x
+.compressor("-8:8:8:0.01:0.01")
+// .cps(rand.range(0.125,1))
+// .rib(irand(300),4)
+)

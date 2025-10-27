@@ -1,0 +1,40 @@
+samples('github:ndr0n/nsamples')
+
+samples('shabda/speech/en-US/m:this_world_is_not_worth_fighting_for')
+
+d4: stack(
+  s("namen:6").splice(16, "[0|1|2|3|4|5|6|7]*[[8|16]*16]").gain(0.875).legato("[0.25|1]*16").cut(3).bpf(perlin.slow(1).rangex(10,10000)).bpq(0.25),  
+  "[<t ~> ~ <~ t> ~ ~ ~ ~ <~ ~ t ~>]*2".s("nk:0").legato(1).gain(1).cut(1),
+  // "[~ ~ ~ ~ t ~ ~ ~]*2".s("ns:8").legato(1).gain(0.7).cut(1),
+  // "[~ ~ ~ [t t] [t t] ~ ~ ~]*1".s("nhh").legato(0.25).gain(0.25).coarse(irand(8)),
+  // "[t t t t]*1".s("nhh:0").legato(0.25).gain(0.25),
+  // "[~ ~ t ~]*4?0.5".s("noh:1").legato(0.375).gain(0.375),
+  
+  // note("[0|2|3|5|12|14|15|17]*16?0.25").trans(33).s("sawtooth").legato(1).gain(1)
+  // .lpq(rand.early(843).range(10,20)).lpf(rand.early(173).range(10,1000)).lpe(rand.early(168).range(0,4)).lpa(rand.early(773).range(-1,0.25))
+  // .fm(rand.range(0,16)).fmh(0.5).fmwave("sawtooth")
+  // .repeatCycles(4)
+  // .iter(8)
+  // ,
+
+).orbit(4).early(16)
+// .coarse(irand(16))
+// .delay(0.25).delayt(0.0275).delayfb(rand.early(683))
+
+let chords = "<Am Em Bm Dm>/2";
+
+d5: stack(
+  // chord(chords).voicing().s("tri").gain(0.75).trans(-12).adsr("2:0:0:0").fm(rand.range(0,0)).fmh(1).fmwave("triangle"),
+  // n("[0|1|2|3|4|5|6|7]*16?0.5").chord(chords).voicing().s("sine").gain(1).clip(1).trans("[0,7]").trans(-12)
+  // .lpf(rand.early(125).rangex(10,10000)).lpq(9).lpe(rand.range(0,6))
+  // .fm(rand.range(0,4)).fmh(1).fmwave("sine")
+  // .vib(rand.range(0,2))
+  // ,
+  // s("[this_world_is_not_worth_fighting_for]*32?0.975").note(36).gain(0.875).cut(8),
+).orbit(5)
+.room(0.25).size(9)
+.delay(0.25).delayt(0.33).delayfb(0.5)
+
+// all(x => x.compressor("-8:0:8:0.01:0.01")
+    // .repeatCycles(4)
+// )

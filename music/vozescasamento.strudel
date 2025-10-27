@@ -1,0 +1,13 @@
+samples('shabda/speech/pt-PT/m:o_tempo_de_contemplação_terminou,a_passagem_abre_se_agora,e_todos_vocês,testemunhas_deste_dia,deverão_atravessá_la')
+
+d1: stack(
+  note("[0]").trans(31).trans("[0]/6").s("sin").legato(1).gain(1).rmorbit(2).dry(0)
+).orbit(1)
+
+d2: stack(
+  s("[o_tempo_de_contemplação_terminou ~ a_passagem_abre_se_agora ~ e_todos_vocês testemunhas_deste_dia ~ deverão_atravessá_la ~]/6")
+  .note(31)
+  .dry(1)
+  .gain(1)
+  // .rm(8)
+).orbit(2)

@@ -1,0 +1,54 @@
+register('ncps', (v, pat) => { return pat.cpm(v*60) });
+register('nbpm', (v, pat) => { return pat.cpm(v/4) });
+const synths = (await import('https://cdn.jsdelivr.net/gh/ndr0n/nstrudel/synths/functions.js')).load();
+const nrand = register('nrand', (min, max, seed) => rand.range(min, max).early(seed));
+
+samples('github:ndr0n/nsamples')
+
+let nk = "[<1 0> 0 0 <0 1> 0 0 0 0]*1"
+let ns = "[0 0 0 0 1 0 0 0]*1"
+let nh = "[1 1 1 1]*[0.5]"
+let nacid = "[0|2|3|5|12|14|15|17]*[[8|16]*16?0.25]";
+let nnotes = "[0|3|5|7|12|15|17|19]*[[8|16]*16?0.7]"
+let nchords = "[[0|3|5|7|9|12|15|17|19],[0|3|5|7|9|12|15|17|19],[0|3|5|7|9|12|15|17|19]]/3"
+
+setcps(0.5)
+
+d1: stack(
+  stack(
+    // s("namen:6").loopAt("[1]*16").slice(8,"[0|1|2|3|4|5|6|7]*8?0.25").gain(0.875).clip("[0.25|1]*32").cut(1).nbpf(nrand(300,6000,126),6,6000),
+    // s("nbreaks:2").loopAt("[1]*16").slice(8,"[0|1|2|3|4|5|6|7]*8?0.5").gain(0.625).clip("[1]*32").cut(1),
+    s("nbreaks:9").loopAt("[2]*16").slice(8,"[0|1|2|3|4|5|6|7]*8?0.5").gain(0.625).clip("[1]*32").cut(1),
+    s("nk:27").struct(nk).clip(3).cut(1).gain(0.75),
+    s("saw").struct(nk).clip(8).cut(2).gain(2).note(25).lpf(nadsr("exp",1,0,0,0,3000,30,1)).lpq(3),
+    // s("ns:3").struct(ns).clip(irand(8).add(1).div(2)).cut(1).gain(0.5).nbpf(nrand(300,6000,126),3,6000),
+  ).coarse(irand(6)),
+  // note(nacid).trans(30).s("saw").gain(0.875).clip(3).cut(6)
+  // .lpf(nrand(30,300,548)).lpe(nrand(-3,6,478)).lpd(nrand(0,0.25,046)).lps(nrand(0,0.5,875)).lpq(nrand(12,24,754))
+  // .sometimesBy(0.25,x=>x.distort("2:0.25:sinefold")).early(8)
+  // .sometimesBy(0.25, x=>x.gain(nlfo("sine","[n30.125|n30.0625]",1,1))).early(16)
+  // .nbpf(perlin.slow(3).range(300,3000).early(586),9,6000),
+).orbit(1)
+// .degradeBy(0.125)
+.delay(0.25).delayt(0.0325).delayfb(nrand(0,0.975,974))
+.sometimesBy(0.125,x=>x.scramble(16)).early(8)
+.sometimesBy(0.25, x=>x.stretch(rand)).early(16)
+.sometimesBy(0.5, x=>x.ncps(nrand(0.125,0.75,125))).early(24)
+// .slowf(2, x=>x.repeatCycles(4))
+// .spectrum({speed: 1})
+
+d2: stack(
+  s("nhh:0").struct(nh).clip(nrand(0.5,0.5,363)).gain(0.5),
+  s("ns:8").struct(ns).degradeBy(0.5).clip(irand(8).add(1).div(2)).cut(8).gain(0.5).nbpf(nrand(300,6000,126),3,6000),
+  // note(nchords).trans(25).clip(1).s("piano").gain(0.75).lpf(6000).lpq(9),
+  // s("npiano:9").loopAt(24).slice(16,"0*8?0.5".add(irand(9))).clip(irand(4).add(1)).cut(8)
+  // .gain(0.875).nbpf(perlin.slow(3).range(300,3000).early(734),3,6000),
+  // s("npad:1").fast(9).degradeBy(0.125).note(24).clip(1).begin(perlin.slow(3).early(361).range(0,0.33)).nbpf(nrand(600,6000,126),3,6000)
+  // s("ndrone:2").fast(9).degradeBy(0).note("[28|35|40]").clip(1).begin(perlin.slow(3).early(361).range(0,0.33)).gain(0.7).nbpf(nrand(600,6000,126),3,6000),
+  // note(nchords).trans(25).s("supersaw").detune(1/8).clip(1).gain(0.7).lpf(nadsr("lin",1,0,0,0,3000,30,1)).lpq(3),
+  // note(nnotes).trans(6).s("casio").n(irand(2)).clip(3).gain(0.375).nbpf(nrand(300,3000,746),3,6000),
+).orbit(2)
+.room(0.375).size(9)
+.delay(0.25).delayt(0.33).delayfb(nrand(0,0.75,136))
+
+all(x => x.webdrone());

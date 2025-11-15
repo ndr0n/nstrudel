@@ -1,4 +1,5 @@
 export function load() {
+  register('randslice', (val, pat) => pat.slice(val, "[0]".add(irand(val))) );
   register('rlpf', (x,pat) => {return pat.lpf(pure(x).mul(12).pow(4))});
   register('rhpf', (x,pat) => {return pat.hpf(pure(x).mul(12).pow(4))});
   register('ncps', (v, pat) => { return pat.cpm(v*60) });

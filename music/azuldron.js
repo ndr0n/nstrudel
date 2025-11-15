@@ -1,0 +1,61 @@
+const synths = (await import('https://cdn.jsdelivr.net/gh/ndr0n/nstrudel/synths/functions.js')).load();
+const nrand = register('nrand', (min, max, seed) => rand.early(seed).range(min, max));
+const nperlin = register('nrand', (min, max, speed, seed) => perlin.fast(speed).early(seed).range(min, max));
+samples('github:ndr0n/nsamples')
+
+setcps(0.5)
+
+let nk = "[<t ~> ~ t?0.7 [<~ t> t?0.7] ~ ~ ~ ~]*1?0.5"
+let ns = "[~ ~ ~ ~ t ~ ~ ~]*1?0.5"
+let nh = "[t t t t]*[0|0.5|1|2|2?0.7|4|4?0.7]"
+let nacid = "[0|2|3|5|12|14|15|17]*[[8|16]*16?0.5]"
+
+d1: stack(
+stack(
+// s("ngkit:1").loopAt(8).slice(8,"[0]*8?0.7".add(irand(8))).cut(1).clip("[0.25|0.5|0.75|1]*8").gain(1).nbpf(nperlin(300,3000,1,839),6,9000),
+s("nk:24").struct(nk).clip(4).note(31).cut(1).gain(1).nbpf(perlin.early(743).range(30,3000), 9, 6000),
+s("ns:28").struct(ns).clip(1).note(31).cut(1).gain(0.625).nbpf(perlin.early(874).range(30,3000), 9, 6000),
+// s("ns:8").struct(ns).clip(irand(4).add(1).div(2)).note(31).cut(1).gain(0.5).nbpf(perlin.early(874).range(30,3000), 9, 6000),
+s("nhh:0").struct(nh).clip(0.25).gain(0.5).nbpf(perlin.early(921).range(60,6000), 3, 9000),
+),
+note(nacid).trans(25).s("saw").clip(1).cut(4).gain(2)
+.sometimesBy(0.25, x=>x.fm(nrand(0,3,295)).fmh(irand(9).mul("[1|2|3]"))).early(8)
+.sometimesBy(0.5, x=>x.gain(0).nmod(nlfo(1).naddnote("[12|24]*16".add("[0|7]*32")).ntype("sawtooth"))).early(16)
+.lpf(nrand(30,300,648)).lpe(nrand(0,6,954)).lpd(nrand(0,0.5,368)).lps(nrand(0,0.25,046)).lpq(nrand(6,12,564))
+.compressor("-9:9:0:0.001:0.001")
+.sometimesBy(0.125,x=>x.delay(0.25).delayt(1/6).delayfb(nrand(0,0.5,953)).delaysync(1))
+,
+).orbit(1)
+// .delay(0.25).delayt(0.0325).delayfb(nrand(0,0.75,259))
+.room(nrand(0,0.25,238)).size(6)
+
+d2: stack(
+  note(25).s("supersaw/[1|2|3|4]").clip(4).gain(2)
+  // .gain(1).nmod(nlfo(1).naddnote(19).naddfreq(nperlin(1,1,1/9,747)))
+  .gain(1).nmod(nlfo(1).naddnote(24).naddfreq(nperlin(-1,1,1/3,747)))
+  .lpf(nperlin(200,2000,1/3,332).add(200)).nmod(nlfo(nperlin(200,2000,1/3,048)).naddnote(12).naddfreq(nperlin(-0.125,0.125,1/9,127))).lpq(3)
+  .bpf(nperlin(100,1000,1/3,634).add(100)).nmod(nlfo(nperlin(100,1000,1/3,256)).naddnote(19).naddfreq(nperlin(-0.125,0.125,1/3,747))).bpq(1/9)
+  // .bpf(nperlin(100,1000,1/3,301).add(30)).nmod(nlfo(nperlin(300,300,1/3,351)).naddnote(24).naddfreq(nperlin(0,0,1/3,845))).bpq(1/9)
+  // .bpf(nperlin(100,1000,1/3,028).add(20)).nmod(nlfo(nperlin(100,1000,1/3,166)).naddnote(24+7).naddfreq(nperlin(-1,1,1/3,346))).bpq(1/9)
+  // .lpf(2000).lpq(6)
+  ,
+// note(25).struct(nk).degradeBy(0.5).s("saw").clip(8).gain(1).cut(2).coarse(irand(9))
+// .gain(0).nmod(nlfo(2).naddnote(19.1).naddfreq(nrand(0,0,683)))
+// .lpf(3).nmod(nenv(3000).natt(1).nsync(1).ntype('exp')).lpq(6)
+// ,
+// note("[0]").trans(31).s("saw").gain(1.5).cut(4)
+// .gain(0.01).nmod(nenv(3).natt(1).nsync(1).ntype("lin"))
+// .gain(1).nmod(nlfo(1).naddnote(19).naddfreq(nrand(-3,3,879)).ntype("sawtooth"))
+// .lpf(400).nmod(nlfo(200).naddnote(19+12).naddfreq(nrand(-6,6,745)).ntype("sawtooth"))
+// .lpq(3).nmod(nlfo(nrand(0,3,423)).nfreq(1).naddfreq(nrand(-1,1,612)))
+).orbit(2)
+.room(0.25).size(9)
+.delay(0.25).delayt(0.33).delayfb(nrand(0,0.5,953)).delaysync(1)
+
+all(n => n
+//   // .webdrone()
+// // .sometimesBy(1/8, x=> x.ncps(nrand(0.25,0.625,646))).early(327)
+// // .sometimesBy(1/8, x=> x.scramble(16)).early(436)
+.spectrum({speed:9})
+)
+

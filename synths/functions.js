@@ -6,7 +6,8 @@ export function load() {
   register('nbpf', (freq, q, bandsize, pat) => { return pat.lpf(freq + (bandsize/2)).lpq(q).hpf(freq - (bandsize/2)).hpq(q) }); 
   register('slows', (speed, seed, pat) => { return pat.late(seed).slow(speed) });
   register('slowf', function (speed, func, pat) { return func(pat.fast(speed)).slow(speed) });
-  register('randslice', (val, pat) => { return pat.slice(val, "[0]".add(irand(val))) });
+  register('randslice', (val, pat) => { return pat.slice(val, m(0).add(irand(val))) });
+  
   window.nrand = register('nrand', (min, max, seed=Math.random()*900) => rand.late(seed).range(min, max));
 
   // SOUNDS

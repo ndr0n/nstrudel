@@ -12,8 +12,7 @@ export function load() {
   window.nrandx = register('nrandx', (min=0,max=1,seed=Math.random()*999) => rand.rangex(min, max).late(seed));
   window.nperlin = register('nperlin', (min=0,max=1,speed=1,seed=Math.random()*999) => perlin.fast(speed).range(min, max).late(seed));
   window.nperlinx = register('nperlinx', (min=0,max=1,speed=1,seed=Math.random()*999) => perlin.fast(speed).rangex(min, max).late(seed));
-  window.nirand = register('nirand', (min=0,max=1,seed=Math.random()*999) => rand.range(min, max+1).floor().late(seed));
-
+  window.nirand = register('nirand', (min=0,max=1,seed=Math.random()*999) => rand.range(min, max.add(1)).floor().late(seed));
 
   // SOUNDS
   registerSound

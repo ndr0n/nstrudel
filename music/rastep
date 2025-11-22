@@ -1,0 +1,52 @@
+await initHydra({feedStrudel: 1, detectAudio: true});
+const synths = (await import('https://cdn.jsdelivr.net/gh/ndr0n/nstrudel/synths/functions.js')).load();
+samples('github:ndr0n/nsamples')
+
+webdrone(true)
+setcps(0.5)
+let nk = "[<t ~> ~ t?0.7 <~ <t [~ t]>> [~ t?0.7] ~ ~ ~]*[1|2]"
+let ns = "[~ ~ ~ ~ t ~ ~ ~]*1"
+let nb = "[t]*32?0.7"
+d1:stack(
+stack(
+nb.s("pulse").pw(rand.late(371))
+.pwrate(600)
+.pwsweep(0.5)
+.note(24).gain(1).clip(irand(9)).cut(5)
+.ndjf(0.1).nmod(nenv(0.4).ndec(1).nsync(1).ntype('exp')).ndjfq(0)
+.fm(irand(3).late(560)).fmh(irand(3).late(729))
+// .coarse(irand(16))
+// .distort("2:0.125:asym")
+// .lpf(1000).lpq(3)
+// .sometimesBy(1/6,x=>x.ncps(rand.range(0.25,0.25)))
+.slowf(2,x=>x.repeatCycles(4))
+,
+nk.s("sbd").psustain(0.5).note(24).dec(1).gain(0.5).clip(8).cut(1)
+.outside(2,x=>x.repeatCycles(4))
+.distort("2:0.5:scurve")
+.coarse(irand(9))
+,
+// nk.s("triangle").note(36).gain(1).clip(8).cut(4)
+// .fm(12).fmh(0.49).fmwave('sawtooth')
+// .gain(1).nmod(nlfo(1).naddnote(19))
+// .distort("2:0.25:sinefold")
+// .ndjf(0.1).nmod(nenv(0.2).ndec(1).nsync(1)).ndjfq(0)
+// ,
+ns.s("white").gain(0.6).clip(0.5).cut(1).coarse(irand(9)),
+s("nhh:0").euclid(irand(16).late(281),irand(16).late(310)).clip(0.3).gain(0.3).ndjf(perlin.slow(3)),
+).orbit(4)
+.delay(0.25).delayt(1/36).delayfb(rand.range(0.875,0.875))
+,
+stack(
+).orbit(5)
+.delay(0.25).delayt(1/3).delayfb(rand.range(0,0.5)).delaysync(1)
+.room(1/3).size(7)
+,
+).scope({pos:0, scale: 0.25})
+.mlimiter(6)
+
+solid(0,0,0).layer(src(s0),1)
+.kaleid(2).scroll(-1/4,0)
+.modulate(src(o1),1000)
+.modulateHue(src(o1).invert(),1000)
+.out(o0)

@@ -7,7 +7,7 @@ export function load() {
   register('slows', (speed, seed, pat) => { return pat.late(seed).slow(speed) });
   register('slowf', function (speed, func, pat) { return func(pat.fast(speed)).slow(speed) });
   register('randslice', (val, pat) => { return pat.slice(val, "[0]".add(irand(val))) });
-  const nrand = register('nrand', (min, max, seed) => rand.late(seed).range(min, max));
+  window.nrand = register('nrand', (min, max, seed=Math.random()*900) => rand.late(seed).range(min, max));
 
   // SOUNDS
   registerSound

@@ -8,9 +8,12 @@ export function load() {
   register('slowf', function (speed, func, pat) { return func(pat.fast(speed)).slow(speed) });
   register('randslice', (val, pat) => { return pat.slice(val, m(0).add(irand(val))) });
   
-  window.nrand = register('nrand', (min,max,seed=Math.random()*999) => rand.range(min, max).late(seed));
-  window.nirand = register('nirand', (min,max,seed=Math.random()*999) => rand.range(min, max).floor().late(seed));
-  window.nperlin = register('nperlin', (min,max,speed=1,seed=Math.random()*999) => perlin.fast(speed).range(min, max).late(seed));
+  window.nrand = register('nrand', (min=0,max=1,seed=Math.random()*999) => rand.range(min, max).late(seed));
+  window.nrandx = register('nrandx', (min=0,max=1,seed=Math.random()*999) => rand.rangex(min, max).late(seed));
+  window.nperlin = register('nperlin', (min=0,max=1,speed=1,seed=Math.random()*999) => perlin.fast(speed).range(min, max).late(seed));
+  window.nperlinx = register('nperlinx', (min=0,max=1,speed=1,seed=Math.random()*999) => perlin.fast(speed).rangex(min, max).late(seed));
+  window.nirand = register('nirand', (min=0,max=1,seed=Math.random()*999) => rand.range(min, max+1).floor().late(seed));
+
 
   // SOUNDS
   registerSound

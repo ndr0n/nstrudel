@@ -4,7 +4,6 @@ export function load() {
   register('ncps', (v, pat) => { return pat.cpm(v*60) });
   register('nbpm', (v, pat) => { return pat.cpm(v/4) });
   register('nbpf', (freq, q, bandsize, pat) => { return pat.lpf(freq + (bandsize/2)).lpq(q).hpf(freq - (bandsize/2)).hpq(q) }); 
-  register('slows', (speed, seed, pat) => { return pat.late(seed).slow(speed) });
   register('slowf', function (speed, func, pat) { return func(pat.fast(speed)).slow(speed) });
   register('randslice', (val, pat) => { return pat.slice(val, m(0).add(irand(val))) });
   
@@ -12,7 +11,8 @@ export function load() {
   window.nrandx = register('nrandx', (min=0,max=1,seed=Math.random()*999) => rand.rangex(min, max).late(seed));
   window.nperlin = register('nperlin', (min=0,max=1,speed=1,seed=Math.random()*999) => perlin.fast(speed).range(min, max).late(seed));
   window.nperlinx = register('nperlinx', (min=0,max=1,speed=1,seed=Math.random()*999) => perlin.fast(speed).rangex(min, max).late(seed));
-  window.nirand = register('nirand', (min=0,max=1,seed=Math.random()*999) => rand.range(min, max.add(1)).floor().late(seed));
+  window.nirand = register('nirand', (min=0,max=0,seed=Math.random()*999) => rand.range(min, reify(max).add(1)).floor().late(seed));
+  window.nirandx = register('nirandx', (min=0,max=0,seed=Math.random()*999) => rand.rangex(min, reify(max).add(1)).floor().late(seed));
 
   // SOUNDS
   registerSound

@@ -5,7 +5,7 @@ export function load() {
   register('nbpm', (v, pat) => { return pat.cpm(v/4) });
   register('nbpf', (freq, q, bandsize, pat) => { return pat.lpf(freq + (bandsize/2)).lpq(q).hpf(freq - (bandsize/2)).hpq(q) }); 
   register('slowf', function (speed, func, pat) { return func(pat.fast(speed)).slow(speed) });
-  register('randslice', (val, pat) => { return pat.slice(val, m(0).add(irand(val))) });
+  register('randslice', (val, pat) => { return pat.slice(val, reify(0).add(irand(val))) });
   
   window.nrand = register('nrand', (min=0,max=1,seed=Math.random()*999) => rand.range(min, max).late(seed));
   window.nrandx = register('nrandx', (min=0,max=1,seed=Math.random()*999) => rand.rangex(min, max).late(seed));
@@ -14,120 +14,118 @@ export function load() {
   window.nirand = register('nirand', (max=0, offset=0, seed=Math.random()*999) => rand.range(offset, reify(max).add(offset)).floor().late(seed));
   window.nirandx = register('nirandx', (max=0, offset=0, seed=Math.random()*999) => rand.rangex(offset, reify(max).add(offset)).floor().late(seed));
   
-  // SOUNDS
-  registerSound
-  (
-    'nsaw',
-    (t, value, onended) => 
-    {
-      // Sound
-      const v1 = value;
-      v1.note = v1.note;
-      const o1 = getOscillator('sawtooth', t, v1);
-      const o1Gain = gainNode(1);
+  // // SOUNDS
+  // registerSound
+  // (
+  //   'nsaw',
+  //   (t, value, onended) => 
+  //   {
+  //     // Sound
+  //     const v1 = value;
+  //     v1.note = v1.note;
+  //     const o1 = getOscillator('sawtooth', t, v1);
+  //     const o1Gain = gainNode(1);
 
-      const v2 = value;
-      v2.note = v2.note + v2.detune;
-      const o2 = getOscillator('sawtooth', t, v2);
-      const o2Gain = gainNode(1);
+  //     const v2 = value;
+  //     v2.note = v2.note + v2.detune;
+  //     const o2 = getOscillator('sawtooth', t, v2);
+  //     const o2Gain = gainNode(1);
 
-      const am = gainNode(1);
+  //     const am = gainNode(1);
       
-      const master = gainNode(0.5);
+  //     const master = gainNode(0.5);
       
-      const env = gainNode(1);
+  //     const env = gainNode(1);
 
-      const node = o1.node.connect(o1Gain).connect(am).connect(master).connect(env);
-      o2.node.connect(o2Gain).connect(am.gain);
+  //     const node = o1.node.connect(o1Gain).connect(am).connect(master).connect(env);
+  //     o2.node.connect(o2Gain).connect(am.gain);
 
-      // Cleanup
-      o1.node.onended = () => 
-      {
-        o1.node.disconnect();
-        o1Gain.disconnect();
+  //     // Cleanup
+  //     o1.node.onended = () => 
+  //     {
+  //       o1.node.disconnect();
+  //       o1Gain.disconnect();
         
-        o2.node.disconnect();
-        o2Gain.disconnect();
+  //       o2.node.disconnect();
+  //       o2Gain.disconnect();
         
-        am.disconnect();
+  //       am.disconnect();
         
-        master.disconnect();
-        env.disconnect();
+  //       master.disconnect();
+  //       env.disconnect();
         
-        onended();
-      };
+  //       onended();
+  //     };
 
-      // Envelope
-      const [attack, decay, sustain, release] = getADSRValues
-      (
-          [value.attack, value.decay, value.sustain, value.release],
-          'linear',
-          [0.001, 0.0, 1.0, 0.001],
-      );
+  //     // Envelope
+  //     const [attack, decay, sustain, release] = getADSRValues
+  //     (
+  //         [value.attack, value.decay, value.sustain, value.release],
+  //         'linear',
+  //         [0.001, 0.0, 1.0, 0.001],
+  //     );
       
-      const holdEnd = t + value.duration;
-      getParamADSR(node.gain, attack, decay, sustain, release, 0, 1, t, holdEnd, 'linear');
-      const envEnd = holdEnd + release + 0.001;
-      o1.triggerRelease?.(envEnd);
-      o1.stop(envEnd);
+  //     const holdEnd = t + value.duration;
+  //     getParamADSR(node.gain, attack, decay, sustain, release, 0, 1, t, holdEnd, 'linear');
+  //     const envEnd = holdEnd + release + 0.001;
+  //     o1.triggerRelease?.(envEnd);
+  //     o1.stop(envEnd);
 
-      return {node, stop: (endTime) => {stop(endTime);}};
-    },
-    { type: 'synth', prebake: true },
-  );
+  //     return {node, stop: (endTime) => {stop(endTime);}};
+  //   },
+  //   { type: 'synth', prebake: true },
+  // );
 
-  registerSound
-  (
-    'nsawfilt',
-    (t, value, onended) => 
-    {
-      // Sound
-      const v1 = value;
-      v1.note = v1.note;
-      const o1 = getOscillator('sawtooth', t, v1);
-      const o1Gain = gainNode(1);
+  // registerSound
+  // (
+  //   'nsawfilt',
+  //   (t, value, onended) => 
+  //   {
+  //     // Sound
+  //     const v1 = value;
+  //     v1.note = v1.note;
+  //     const o1 = getOscillator('sawtooth', t, v1);
+  //     const o1Gain = gainNode(1);
       
-      const master = gainNode(0.25);
-      const env = gainNode(1);
+  //     const master = gainNode(0.25);
+  //     const env = gainNode(1);
 
-      let filter = getAudioContext().createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.Q.value = 16;
-      filter.frequency.value = 0;
-      filter.frequency.setValueAtTime(0, t);
-      filter.frequency.linearRampToValueAtTime(1000, t+value.duration)
-      const node = o1.node.connect(o1Gain).connect(filter).connect(master).connect(env);
+  //     let filter = getAudioContext().createBiquadFilter();
+  //     filter.type = 'lowpass';
+  //     filter.Q.value = 16;
+  //     filter.frequency.value = 0;
+  //     filter.frequency.setValueAtTime(0, t);
+  //     filter.frequency.linearRampToValueAtTime(1000, t+value.duration)
+  //     const node = o1.node.connect(o1Gain).connect(filter).connect(master).connect(env);
 
-      // Cleanup
-      o1.node.onended = () => 
-      {
-        o1.node.disconnect();
-        o1Gain.disconnect();
-        filter.disconnect();
-        master.disconnect();
-        env.disconnect();
-        onended();
-      };
+  //     // Cleanup
+  //     o1.node.onended = () => 
+  //     {
+  //       o1.node.disconnect();
+  //       o1Gain.disconnect();
+  //       filter.disconnect();
+  //       master.disconnect();
+  //       env.disconnect();
+  //       onended();
+  //     };
 
-      // Envelope
-      const [attack, decay, sustain, release] = getADSRValues
-      (
-          [value.attack, value.decay, value.sustain, value.release],
-          'linear',
-          [0.001, 0.0, 1.0, 0.001],
-      );
+  //     // Envelope
+  //     const [attack, decay, sustain, release] = getADSRValues
+  //     (
+  //         [value.attack, value.decay, value.sustain, value.release],
+  //         'linear',
+  //         [0.001, 0.0, 1.0, 0.001],
+  //     );
       
-      const holdEnd = t + value.duration;
-      getParamADSR(node.gain, attack, decay, sustain, release, 0, 1, t, holdEnd, 'linear');
-      const envEnd = holdEnd + release + 0.001;
+  //     const holdEnd = t + value.duration;
+  //     getParamADSR(node.gain, attack, decay, sustain, release, 0, 1, t, holdEnd, 'linear');
+  //     const envEnd = holdEnd + release + 0.001;
       
-      o1.triggerRelease?.(envEnd);
-      o1.stop(envEnd);
+  //     o1.triggerRelease?.(envEnd);
+  //     o1.stop(envEnd);
 
-      return {node, stop: (endTime) => {stop(endTime);}};
-    },
-    { type: 'synth', prebake: true },
-  );
-
-
+  //     return {node, stop: (endTime) => {stop(endTime);}};
+  //   },
+  //   { type: 'synth', prebake: true },
+  // );
 }
